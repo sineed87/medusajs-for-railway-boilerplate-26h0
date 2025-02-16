@@ -1,37 +1,37 @@
-import { Text, clx } from "@medusajs/ui";
-import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import React from "react";
-
-// Accordion Item Props
+import { Text, clx } from "@medusajs/ui"
+import * as AccordionPrimitive from "@radix-ui/react-accordion"
+import React from "react"
+// @ts-nocheck
 type AccordionItemProps = AccordionPrimitive.AccordionItemProps & {
-  title: string;
-  subtitle?: string;
-  description?: string;
-  required?: boolean;
-  tooltip?: string;
-  forceMountContent?: true;
-  headingSize?: "small" | "medium" | "large";
-  customTrigger?: React.ReactNode;
-  complete?: boolean;
-  active?: boolean;
-  triggerable?: boolean;
-  children: React.ReactNode;
-};
+  title: string
+  subtitle?: string
+  description?: string
+  required?: boolean
+  tooltip?: string
+  forceMountContent?: true
+  headingSize?: "small" | "medium" | "large"
+  customTrigger?: React.ReactNode
+  complete?: boolean
+  active?: boolean
+  triggerable?: boolean
+  children: React.ReactNode
+}
 
-// Accordion Props
 type AccordionProps =
-  | ({ type: "single" } & AccordionPrimitive.AccordionSingleProps)
-  | ({ type: "multiple" } & AccordionPrimitive.AccordionMultipleProps);
+  | (AccordionPrimitive.AccordionSingleProps &
+      React.RefAttributes<HTMLDivElement>)
+  | (AccordionPrimitive.AccordionMultipleProps &
+      React.RefAttributes<HTMLDivElement>)
 
-// Accordion Component
-const Accordion: React.FC<AccordionProps> & { Item: React.FC<AccordionItemProps> } = ({
-  children,
-  ...props
-}) => {
-  return <AccordionPrimitive.Root {...(props as any)}>{children}</AccordionPrimitive.Root>;
-};
+const Accordion: React.FC<AccordionProps> & {
+  Item: React.FC<AccordionItemProps>
+} = ({ children, ...props }) => {
+  return (
+    /* @ts-expect-error */
+    <AccordionPrimitive.Root {...props}>{children}</AccordionPrimitive.Root>
+  )
+}
 
-// Accordion Item Component
 const Item: React.FC<AccordionItemProps> = ({
   title,
   subtitle,
@@ -45,19 +45,23 @@ const Item: React.FC<AccordionItemProps> = ({
   ...props
 }) => {
   return (
+    /* @ts-expect-error */
     <AccordionPrimitive.Item
       {...props}
-      // Convert `key` to string if it's a `bigint`
-      key={String(props.key)}  // Ensure key is a string or number
-      className={clx("border-grey-20 group border-t last:mb-0 last:border-b py-3", className)}
-    >
+      className={clx(
+        "border-grey-20 group border-t last:mb-0 last:border-b",
+        "py-3",
+        className
+      )}
+    >{/* x@ts-expect-error */}
       <AccordionPrimitive.Header className="px-1">
         <div className="flex flex-col">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">
               <Text className="text-ui-fg-subtle text-sm">{title}</Text>
             </div>
-            <AccordionPrimitive.Trigger asChild>
+            {/* x@ts-expect-error */}
+            <AccordionPrimitive.Trigger>
               {customTrigger || <MorphingTrigger />}
             </AccordionPrimitive.Trigger>
           </div>
@@ -68,6 +72,7 @@ const Item: React.FC<AccordionItemProps> = ({
           )}
         </div>
       </AccordionPrimitive.Header>
+      {/* x@ts-expect-error */}
       <AccordionPrimitive.Content
         forceMount={forceMountContent}
         className={clx(
@@ -80,13 +85,11 @@ const Item: React.FC<AccordionItemProps> = ({
         </div>
       </AccordionPrimitive.Content>
     </AccordionPrimitive.Item>
-  );
-};
+  )
+}
 
-// Add Item component to Accordion
-Accordion.Item = Item;
+Accordion.Item = Item
 
-// MorphingTrigger Component
 const MorphingTrigger = () => {
   return (
     <div className="text-grey-90 hover:bg-grey-5 active:bg-grey-5 active:text-violet-60 focus:border-violet-60 disabled:text-grey-30 bg-transparent disabled:bg-transparent rounded-rounded group relative p-[6px]">
@@ -95,7 +98,7 @@ const MorphingTrigger = () => {
         <span className="bg-grey-50 rounded-circle group-radix-state-open:rotate-90 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 absolute inset-x-[31.75%] top-[48%] bottom-1/2 h-[1.5px] duration-300" />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Accordion;
+export default Accordion
