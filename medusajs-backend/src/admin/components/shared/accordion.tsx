@@ -18,15 +18,19 @@ type AccordionItemProps = AccordionPrimitive.AccordionItemProps & {
   triggerable?: boolean;
 };
 
-const Accordion: React.FC<
-  | (AccordionPrimitive.AccordionSingleProps & React.RefAttributes<HTMLDivElement>)
-  | (AccordionPrimitive.AccordionMultipleProps & React.RefAttributes<HTMLDivElement>)
-> & {
-  Item: React.FC<AccordionItemProps>;
-} = ({ children, ...props }) => {
+// Type for the Accordion component
+const Accordion = React.forwardRef<
+  HTMLDivElement,
+  | AccordionPrimitive.AccordionSingleProps
+  | AccordionPrimitive.AccordionMultipleProps
+>(({ children, ...props }, ref) => {
   return (
-    <AccordionPrimitive.Root {...(props as any)}>{children}</AccordionPrimitive.Root>
+    <AccordionPrimitive.Root ref={ref} {...props}>
+      {children}
+    </AccordionPrimitive.Root>
   );
+}) as typeof AccordionPrimitive.Root & {
+  Item: React.FC<AccordionItemProps>;
 };
 
 const Item: React.FC<AccordionItemProps> = ({
@@ -54,40 +58,42 @@ const Item: React.FC<AccordionItemProps> = ({
         className
       )}
     >
-      <AccordionPrimitive.Header className="px-1">
-        <div className="flex flex-col">
-          <div className="flex w-full items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center p-[10px]">
-                {complete ? (
-                  <CheckCircleSolid className="text-ui-fg-interactive" />
-                ) : (
-                  <>
-                    {active && (
-                      <ActiveCircleDottedLine
-                        size={20}
-                        className="text-ui-fg-interactive rounded-full"
-                      />
-                    )}
-                    {!active && (
-                      <CircleMiniSolid className="text-ui-fg-muted" />
-                    )}
-                  </>
-                )}
+      <AccordionPrimitive.Header asChild>
+        <div className="px-1">
+          <div className="flex flex-col">
+            <div className="flex w-full items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center p-[10px]">
+                  {complete ? (
+                    <CheckCircleSolid className="text-ui-fg-interactive" />
+                  ) : (
+                    <>
+                      {active && (
+                        <ActiveCircleDottedLine
+                          size={20}
+                          className="text-ui-fg-interactive rounded-full"
+                        />
+                      )}
+                      {!active && (
+                        <CircleMiniSolid className="text-ui-fg-muted" />
+                      )}
+                    </>
+                  )}
+                </div>
+                <Heading level="h3" className={clx("text-ui-fg-base")}>
+                  {title}
+                </Heading>
               </div>
-              <Heading level="h3" className={clx("text-ui-fg-base")}>
-                {title}
-              </Heading>
+              <AccordionPrimitive.Trigger asChild>
+                {customTrigger || <MorphingTrigger />}
+              </AccordionPrimitive.Trigger>
             </div>
-            <AccordionPrimitive.Trigger>
-              {customTrigger || <MorphingTrigger />}
-            </AccordionPrimitive.Trigger>
+            {subtitle && (
+              <Text as="span" size="small" className="mt-1">
+                {subtitle}
+              </Text>
+            )}
           </div>
-          {subtitle && (
-            <Text as="span" size="small" className="mt-1">
-              {subtitle}
-            </Text>
-          )}
         </div>
       </AccordionPrimitive.Header>
       <AccordionPrimitive.Content
