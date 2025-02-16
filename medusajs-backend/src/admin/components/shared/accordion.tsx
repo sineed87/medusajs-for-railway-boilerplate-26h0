@@ -19,15 +19,13 @@ type AccordionItemProps = AccordionPrimitive.AccordionItemProps & {
 };
 
 const Accordion: React.FC<
-  | (AccordionPrimitive.AccordionSingleProps &
-      React.RefAttributes<HTMLDivElement>)
-  | (AccordionPrimitive.AccordionMultipleProps &
-      React.RefAttributes<HTMLDivElement>)
+  | (AccordionPrimitive.AccordionSingleProps & React.RefAttributes<HTMLDivElement>)
+  | (AccordionPrimitive.AccordionMultipleProps & React.RefAttributes<HTMLDivElement>)
 > & {
   Item: React.FC<AccordionItemProps>;
 } = ({ children, ...props }) => {
   return (
-    <AccordionPrimitive.Root {...props}>{children}</AccordionPrimitive.Root>
+    <AccordionPrimitive.Root {...(props as any)}>{children}</AccordionPrimitive.Root>
   );
 };
 
