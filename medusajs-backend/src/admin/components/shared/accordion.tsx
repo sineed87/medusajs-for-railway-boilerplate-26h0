@@ -19,16 +19,12 @@ type AccordionItemProps = AccordionPrimitive.AccordionItemProps & {
 };
 
 const Accordion: React.FC<
-  | (AccordionPrimitive.AccordionSingleProps &
-      React.RefAttributes<HTMLDivElement>)
-  | (AccordionPrimitive.AccordionMultipleProps &
-      React.RefAttributes<HTMLDivElement>)
+  | (AccordionPrimitive.AccordionSingleProps & React.RefAttributes<HTMLDivElement>)
+  | (AccordionPrimitive.AccordionMultipleProps & React.RefAttributes<HTMLDivElement>)
 > & {
   Item: React.FC<AccordionItemProps>;
 } = ({ children, ...props }) => {
-  return (
-    <AccordionPrimitive.Root {...props}>{children}</AccordionPrimitive.Root>
-  );
+  return <AccordionPrimitive.Root {...props}>{children}</AccordionPrimitive.Root>;
 };
 
 const Item: React.FC<AccordionItemProps> = ({
@@ -50,13 +46,10 @@ const Item: React.FC<AccordionItemProps> = ({
   return (
     <AccordionPrimitive.Item
       {...props}
-      className={clx(
-        "border-grey-20 group border-t last:mb-0",
-        "py-1 px-8",
-        className
-      )}
+      className={clx("border-grey-20 group border-t last:mb-0 py-1 px-8", className)}
     >
-      <AccordionPrimitive.Header className="px-1">
+      {/* Removed AccordionPrimitive.Header and used a div instead */}
+      <div className="px-1">
         <div className="flex flex-col">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">
@@ -71,15 +64,11 @@ const Item: React.FC<AccordionItemProps> = ({
                         className="text-ui-fg-interactive rounded-full"
                       />
                     )}
-                    {!active && (
-                      <CircleMiniSolid className="text-ui-fg-muted" />
-                    )}
+                    {!active && <CircleMiniSolid className="text-ui-fg-muted" />}
                   </>
                 )}
               </div>
-              <Heading level="h3" className={clx("text-ui-fg-base")}>
-                {title}
-              </Heading>
+              <Heading level="h3" className={clx("text-ui-fg-base")}>{title}</Heading>
             </div>
             <AccordionPrimitive.Trigger>
               {customTrigger || <MorphingTrigger />}
@@ -91,7 +80,8 @@ const Item: React.FC<AccordionItemProps> = ({
             </Text>
           )}
         </div>
-      </AccordionPrimitive.Header>
+      </div>
+
       <AccordionPrimitive.Content
         forceMount={forceMountContent}
         className={clx(
